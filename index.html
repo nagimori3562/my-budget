@@ -26,31 +26,32 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
-    /* カードからはみ出る線を強制的にカットする設定 */
     .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border); width: 100%; max-width: 100%; overflow: hidden; position: relative; }
-    
     .prediction-card { background: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%); border: 1px solid #C7D2FE; }
     .card-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
     .hero-amount { font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
     .hero-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
     
     .input-group { margin-bottom: 12px; width: 100%; }
+    .flex-inputs { display: flex; gap: 8px; margin-bottom: 12px; width: 100%; }
     
-    /* 入力欄の横幅をカードの余白内に完全に収める調整 */
+    /* iOS Safariの入力欄はみ出しを強制ブロック */
     input[type="text"], input[type="number"], input[type="date"], select { 
-      padding: 12px 14px; 
+      padding: 12px; 
       border: 1px solid var(--border); 
       border-radius: 10px; 
       font-size: 1rem; 
-      width: 100%; 
-      max-width: 100%;
+      width: 100% !important; 
+      max-width: 100% !important;
+      min-width: 0 !important;
       background-color: #fff; 
       display: block; 
-      box-sizing: border-box;
+      box-sizing: border-box !important;
+      -webkit-box-sizing: border-box !important;
+      -webkit-appearance: none;
+      margin: 0 !important;
     }
-    input[type="date"] {
-      text-align: center;
-    }
+    input[type="date"] { text-align: center; }
     input:focus, select:focus { border-color: var(--primary); outline: none; }
     
     .btn { background-color: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; width: 100%; display: block; text-align: center; }
