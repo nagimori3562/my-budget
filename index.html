@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- 強力なキャッシュクリア設定 -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -23,7 +22,11 @@
       --border: #E5E7EB;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    
+    /* 画面全体の背景色をアプリの背景色に統一して、引っ張ったときの白さを防止 */
+    html { background-color: var(--bg); height: 100%; }
+    
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
     header { background-color: var(--card-bg); padding: 16px; text-align: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
     header h1 { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
     main { padding: 16px; flex: 1; width: 100%; max-width: 100%; overflow-x: hidden; }
@@ -36,7 +39,6 @@
     .hero-amount { font-size: 2.2rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
     .hero-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
     
-    /* 入力欄の構造をFlexboxに変更し、はみ出しを完全ブロック */
     .input-group { margin-bottom: 12px; display: flex; flex-direction: column; width: 100%; }
     .flex-inputs { display: flex; flex-direction: row; gap: 8px; margin-bottom: 12px; width: 100%; }
     .flex-inputs > * { flex: 1; min-width: 0; }
