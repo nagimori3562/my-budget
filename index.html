@@ -61,15 +61,18 @@
     .legend-item { display: flex; align-items: center; font-size: 0.85rem; }
     .legend-color { width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; background-color: var(--primary-light); color: var(--primary); margin-right: 6px; }
+    
+    /* カレンダー周りの修正 */
     .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-    .cal-day-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); padding: 4px 0; }
-    .cal-cell { aspect-ratio: 1; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.75rem; background-color: #FAFAFA; border: 1px solid #F0F0F0; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; }
+    .cal-day-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); padding: 4px 0; }
+    .cal-cell { aspect-ratio: 1; border-radius: 6px; padding: 2px; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.7rem; background-color: #FAFAFA; border: 1px solid #F0F0F0; min-width: 0; overflow: hidden; }
     .cal-cell.empty { background-color: transparent; border: none; }
     .cal-cell.today { border-color: var(--primary); font-weight: 700; background-color: #fff; box-shadow: 0 0 0 1px var(--primary); }
     .cal-cell.budget-ok { background-color: var(--success-light); color: #065F46; border-color: #A7F3D0; }
     .cal-cell.budget-over { background-color: var(--danger-light); color: #991B1B; border-color: #FECACA; }
-    .cal-amount { font-size: 0.65rem; font-weight: 700; word-break: break-all; }
+    .cal-amount { font-size: 0.55rem; font-weight: 700; word-break: break-all; line-height: 1.1; letter-spacing: -0.5px; }
+    
     .cat-tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; margin-bottom: 12px; }
     .cat-tag { background: #F3F4F6; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
     .cat-tag .remove-btn { color: var(--text-muted); cursor: pointer; font-weight: bold; }
