@@ -27,8 +27,8 @@
     html { background-color: var(--bg); height: 100%; }
     
     body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
-    header { background-color: var(--card-bg); padding: 16px; text-align: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
-    header h1 { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    header { background-color: var(--card-bg); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin: 0; }
     main { padding: 16px; flex: 1; width: 100%; max-width: 100%; overflow-x: hidden; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -105,8 +105,16 @@
   </style>
 </head>
 <body>
+  <!-- ヘッダーにログインボタンを追加 -->
   <header>
     <h1>きょうの予算手帳</h1>
+    <div id="auth-container">
+      <button type="button" id="login-btn" class="btn" style="padding: 6px 12px; font-size: 0.85rem; width: auto;" onclick="loginWithGoogle()">Googleでログイン</button>
+      <div id="user-info" style="display: none; align-items: center; gap: 8px;">
+        <span id="user-name" style="font-size: 0.8rem; font-weight: bold; color: var(--primary);"></span>
+        <button type="button" class="btn-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
   </header>
   <main>
     <div id="tab-home" class="tab-content active">
@@ -239,11 +247,41 @@
       <span class="nav-icon">⚙️</span><span>設定</span>
     </button>
   </nav>
+
+  <!-- Firebaseの接続設定 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnKAzqwsoquznEtJv_24hZB9_kKjV3P-k",
+      authDomain: "hiwari-techo.firebaseapp.com",
+      projectId: "hiwari-techo",
+      storageBucket: "hiwari-techo.firebasestorage.app",
+      messagingSenderId: "333239366314",
+      appId: "1:333239366314:web:d57a08dfeec9b3e6dc96d3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    
+    window.db = getFirestore(app);
+    window.auth = getAuth(app);
+    window.signInWithPopup = signInWithPopup;
+    window.GoogleAuthProvider = GoogleAuthProvider;
+    window.onAuthStateChanged = onAuthStateChanged;
+    window.doc = doc;
+    window.setDoc = setDoc;
+    window.getDoc = getDoc;
+  </script>
+
+  <!-- アプリの基本プログラム ＋ ログイン処理 -->
   <script>
     const STORAGE_KEY = 'budget_app_data_v13_total_budget';
     let appData = { settings: { totalBudget: 15000, startDate: '', endDate: '' }, categories: ['食費', '日用品', '交通費', '娯楽', 'その他'], expenses: [] };
     const chartColors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#64748B'];
     let currentCalDate = new Date(), currentCalcStr = "", editingId = null;
+    
     window.onload = () => { loadData(); document.getElementById('input-date').value = getTodayStr(); renderAll(); };
     function formatDateForStorage(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
     function formatDateForDisplay(dateStr) { if (!dateStr) return ''; const d = new Date(dateStr); return `${d.getMonth() + 1}/${d.getDate()}`; }
@@ -495,6 +533,48 @@
       document.querySelectorAll('.nav-btn')[tabName === 'home' ? 0 : tabName === 'history' ? 1 : 2].classList.add('active');
       if (tabName === 'history') { currentCalDate = new Date(); renderHistoryTab(); }
     }
+
+    // 🔽🔽🔽 ログイン・ログアウト処理を追加 🔽🔽🔽
+    let currentUser = null;
+
+    // Firebaseの準備ができたら、ログイン状態を監視する
+    setTimeout(() => {
+      if (window.onAuthStateChanged) {
+        window.onAuthStateChanged(window.auth, (user) => {
+          if (user) {
+            currentUser = user;
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('user-info').style.display = 'flex';
+            document.getElementById('user-name').innerText = user.displayName + 'さん';
+            console.log("ログイン中:", user.email);
+          } else {
+            currentUser = null;
+            document.getElementById('login-btn').style.display = 'block';
+            document.getElementById('user-info').style.display = 'none';
+            console.log("ログアウト状態です");
+          }
+        });
+      }
+    }, 500);
+
+    function loginWithGoogle() {
+      const provider = new window.GoogleAuthProvider();
+      window.signInWithPopup(window.auth, provider)
+        .then((result) => {
+          alert(result.user.displayName + "さん、ようこそ！");
+        })
+        .catch((error) => {
+          console.error("ログインエラー:", error);
+          alert("ログインに失敗しました。");
+        });
+    }
+
+    function logout() {
+      if (confirm('ログアウトしますか？')) {
+        window.auth.signOut();
+      }
+    }
+    // 🔼🔼🔼 ログイン・ログアウト処理ここまで 🔼🔼🔼
   </script>
 </body>
 </html>
